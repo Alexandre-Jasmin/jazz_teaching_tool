@@ -9,8 +9,8 @@ load_dotenv()
 RIOT_API_KEY = os.getenv("RIOT_API_KEY")
 RIOT_API_INSTANCE = RiotAPI(RIOT_API_KEY)
 
-def load_classroom():
-    loadedClassroom = Classroom(puuid="test")
+def load_classroom(classroom_id):
+    loadedClassroom = Classroom(puuid=classroom_id)
     return loadedClassroom
 
 def get_summoner(summoner_name, server):

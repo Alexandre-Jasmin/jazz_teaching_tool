@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
     <h2>Classroom</h2>
-    <h3>{{ data }}</h3>
+    <form action="/classroom/id" method="get">
+        <label for="classroom_id">Classroom ID:</label>
+        <input type="text" id="classroom_id" name="classroom_id" required>
+        <button type="submit">Load</button>
+    </form>
 {% endblock %}

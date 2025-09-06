@@ -11,7 +11,14 @@ def index():
 def classroom_home():
     return render_template("classroom.html")
 
-#@main.route("/classroom/id/<string:classroom_id>")
+@main.route("/classroom/id")
+def classroom_api():
+    try:
+        puuid = request.args.get("classroom_puuid")
+        myClassroom = load_classroom(puuid)
+    except Exception as e:
+        return "Failed to load classrom"
+    return render_template("index.html", data = myClassroom)
 
 @main.route("/lol")
 def league_home():
