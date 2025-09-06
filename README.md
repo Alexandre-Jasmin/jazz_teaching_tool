@@ -1,9 +1,8 @@
 
-# 🚀 Project Name
+# 🚀 jaZZ tool
 
 *"Personnal Website"*
 
 ## ✨ Features
-- 🔒 Feature one  
-- ⚡ Feature two  
-- 🌍 Feature three  
+- Classroom 
+- League of Legends API 
