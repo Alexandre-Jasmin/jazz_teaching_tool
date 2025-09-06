@@ -14,8 +14,16 @@ def load_classroom():
     return loadedClassroom
 
 def get_summoner(summoner_name, server):
+
     name, tag = RIOT_API_INSTANCE.split_summoner_name(summoner_name)
     if name == None:
         return {"message": f"Failed to split the summoner name ({summoner_name})"}
+    
     RIOT_API_INSTANCE.set_region(server)
-    return RIOT_API_INSTANCE.get_account(summoner_name=name, tag=tag)
+    accountData = RIOT_API_INSTANCE.get_account(summoner_name=name, tag=tag)
+    summonerData = RIOT_API_INSTANCE.get_summoner(puuid=accountData["puuid"])
+
+    return summonerData
+
+def get_match_data(match_id):
+    return 0
