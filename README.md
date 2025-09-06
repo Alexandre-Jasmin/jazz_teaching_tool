@@ -16,13 +16,16 @@
 
 ---
 
-## Features
+## Structure
 
 - **run.py**
+- **config.py**
 - **app/**
-  - Manage classroom data
-  - Uses a basic JSON database with backup
-- **League of Legends API**
-  - REST endpoints:
+  - models
+    - `__init__.py`
+    - `riot_api.py`
+- **data/**
+  - classroom.pkl
+  - data.json
     - `/lol/summoner`
     - `/lol/match`
