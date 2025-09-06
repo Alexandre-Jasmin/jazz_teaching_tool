@@ -18,7 +18,8 @@
 
 ## Features
 
-- **Classroom**
+- **run.py**
+- **app/**
   - Manage classroom data
   - Uses a basic JSON database with backup
 - **League of Legends API**
