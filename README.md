@@ -21,12 +21,14 @@
 - **run.py**
 - **config.py**
 - **app/**
+  - static/
   - models/
     - `__init__.py`
     - `riot_api.py`
     - `classroom.py`
     - `utils.py`
   - templates/
+    - `base.html`
   - `__init__.py`
   - `routes.py`
   - `services.py`
