@@ -1,8 +1,12 @@
 
-# 🚀 jaZZ tool
+# jaZZ tool
 
-*"Personnal Website"*
+*"Personnal Flask Website"*
 
 ## ✨ Features
 - Classroom 
-- League of Legends API 
+- League of Legends API
+
+### Classroom
+
+### League of Legends API
