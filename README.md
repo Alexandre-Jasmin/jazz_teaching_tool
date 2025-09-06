@@ -10,3 +10,8 @@
 ### Classroom
 
 ### League of Legends API
+
+- Basic json database with backup
+- Endpoints
+/lol/summoner
+/lol/match
