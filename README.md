@@ -27,9 +27,9 @@
     - `classroom.py`
     - `utils.py`
   - templates/
-  - __init__.py
-  - routes.py
-  - services.py
+  - `__init__.py`
+  - `routes.py`
+  - `services.py`
 - **data/**
   - classroom.pkl
   - data.json
