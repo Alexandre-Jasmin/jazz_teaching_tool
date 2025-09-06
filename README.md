@@ -17,3 +17,8 @@
 ---
 
 ## 📂 Project Structure
+
+- **Structure**
+  - app/:
+    - `__init__.py`
+    - `routes.py`
