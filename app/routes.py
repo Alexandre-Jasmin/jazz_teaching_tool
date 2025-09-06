@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify
-from .services import load_classroom, get_summoner, get_match_data
+from .services import load_classroom, get_summoner
 
 main = Blueprint("main", __name__)
 
@@ -17,7 +17,7 @@ def classroom_api():
         puuid = request.args.get("classroom_puuid")
         myClassroom = load_classroom(puuid)
     except Exception as e:
-        return "Failed to load classrom"
+        return "classroom_api() error"
     return render_template("index.html", data = myClassroom)
 
 @main.route("/lol")
@@ -31,10 +31,5 @@ def summoner_api():
         summoner_name = request.args.get("summoner")
         data = get_summoner(summoner_name, server)
     except Exception as e:
-        return "summoner_api error"
-    return jsonify(data)
-
-@main.route("/lol/match/<string:match_id>")
-def match_api(match_id):
-    data = get_match_data(match_id)
+        return "summoner_api() error"
     return jsonify(data)
