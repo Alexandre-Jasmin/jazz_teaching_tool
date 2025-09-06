@@ -13,5 +13,5 @@
 
 - Basic json database with backup
 - Endpoints
-/lol/summoner
-/lol/match
+-- /lol/summoner
+-- /lol/match
