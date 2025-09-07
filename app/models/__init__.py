@@ -1,9 +1,11 @@
 from .classroom import Classroom
 from .riot_api import RiotAPI
 from .utils import Utilities
+from .league_player import LeaguePlayer
 
 __all__ = [
     "Classroom",
     "RiotAPI",
-    "Utilities"
+    "Utilities",
+    "LeaguePlayer"
 ]
