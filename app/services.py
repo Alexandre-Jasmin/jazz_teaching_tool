@@ -1,28 +1,23 @@
-import os
-from dotenv import load_dotenv
-
 from .models import Classroom
-from .models import RiotAPI
-
-load_dotenv()
-
-RIOT_API_KEY = os.getenv("RIOT_API_KEY")
-RIOT_API_INSTANCE = RiotAPI(RIOT_API_KEY)
+from config import RIOT_API_INSTANCE, UTILITIES
 
 def load_classroom(classroom_id):
-    loadedClassroom = Classroom(puuid=classroom_id)
+    try:
+        loadedClassroom = Classroom(puuid=classroom_id)
+    except Exception as e:
+        return None
     return loadedClassroom
 
 def get_summoner(summoner_name, server):
-
-    name, tag = RIOT_API_INSTANCE.split_summoner_name(summoner_name)
+    name, tag = UTILITIES.split_summoner_name(summoner_name)
     if name == None:
         return {"message": f"Failed to split the summoner name ({summoner_name})"}
-    
-    RIOT_API_INSTANCE.set_region(server)
-    accountData = RIOT_API_INSTANCE.get_account(summoner_name=name, tag=tag)
-    summonerData = RIOT_API_INSTANCE.get_summoner(puuid=accountData["puuid"])
-
+    try:
+        RIOT_API_INSTANCE.set_region(server)
+        accountData = RIOT_API_INSTANCE.get_account(summoner_name=name, tag=tag)
+        summonerData = RIOT_API_INSTANCE.get_summoner(puuid=accountData["puuid"])
+    except Exception as e:
+        return None
     return summonerData
 
 def get_match_data(match_id):
