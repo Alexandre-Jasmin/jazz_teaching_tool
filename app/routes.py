@@ -32,4 +32,4 @@ def summoner_api():
         data = get_summoner(summoner_name, server)
     except Exception as e:
         return "summoner_api() error"
-    return jsonify(data)
+    return render_template("player_home.html", data=data)

@@ -1,5 +1,4 @@
 from .models import Classroom, LeaguePlayer
-from config import RIOT_API_INSTANCE, UTILITIES
 
 def load_classroom(classroom_id):
     try:
@@ -8,7 +7,7 @@ def load_classroom(classroom_id):
         return None
     return loadedClassroom
 
-def get_summoner(summoner_name, server):
+def get_summoner(summoner_name: str, server: str):
     try:
         myLeaguePlayer = LeaguePlayer(summoner_name, server)
         playerData = myLeaguePlayer.data
