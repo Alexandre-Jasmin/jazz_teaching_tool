@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<p>{{ data }}</p>
+<p>Name: {{ data.accountData["gameName"] }}#{{ data.accountData["tagLine"] }}</p>
+<p>Level: {{ data.summonerData["summonerLevel"] }}</p>
 {% endblock %}
 
 <!-- <img src="{{ url_for('static', filename='imgs/champions/ahri.png') }}" alt="Ahri"> -->

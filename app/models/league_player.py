@@ -1,5 +1,5 @@
 import json
-from config import RIOT_API_INSTANCE, UTILITIES, Config, LEAGUE_CHAMPIONS
+from config import RIOT_API_INSTANCE, UTILITIES, Config
 
 class LeaguePlayer():
 
@@ -8,26 +8,20 @@ class LeaguePlayer():
         self.summoner_name = summoner_name
         self.server = server
         self.name, self.tag = UTILITIES.split_summoner_name(self.summoner_name)
+        
         RIOT_API_INSTANCE.set_region(self.server)
-
-        accountData = RIOT_API_INSTANCE.get_account(summoner_name=self.name, tag=self.tag)
-        summonerData = RIOT_API_INSTANCE.get_summoner(puuid=accountData["puuid"])
-        championData = RIOT_API_INSTANCE.get_champion_mastery(puuid=accountData["puuid"])
-        challengesData = RIOT_API_INSTANCE.get_challenges(puuid=accountData["puuid"])
+        self.accountData = RIOT_API_INSTANCE.get_account(summoner_name=self.name, tag=self.tag)
+        self.summonerData = RIOT_API_INSTANCE.get_summoner(puuid=self.accountData["puuid"])
+        self.championData = RIOT_API_INSTANCE.get_champion_mastery(puuid=self.accountData["puuid"])
+        self.challengesData = RIOT_API_INSTANCE.get_challenges(puuid=self.accountData["puuid"])
         
         filename = "test.json"
         path = Config.get_data_path(filename)
         with open(path, "r", encoding="utf-8") as f:
             testData = json.load(f)
 
-        self.data = {
-            "server": self.server,
-            "testing": testData,
-            "accountData": accountData,
-            "summonerData": summonerData,
-            "championData": championData,
-            "challengesData": challengesData
-        }
+    def refresh_stats():
+        return 0 
 
     #on init, load basic information
     #check in database for information

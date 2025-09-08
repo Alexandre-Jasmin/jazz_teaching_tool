@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from .services import load_classroom, get_summoner
 
 main = Blueprint("main", __name__)
@@ -11,25 +11,22 @@ def index():
 def classroom_home():
     return render_template("classroom.html")
 
-@main.route("/classroom/id")
-def classroom_api():
-    try:
-        puuid = request.args.get("classroom_puuid")
-        myClassroom = load_classroom(puuid)
-    except Exception as e:
-        return "classroom_api() error"
-    return render_template("index.html", data = myClassroom)
-
 @main.route("/lol")
 def league_home():
-    return render_template("league_home.html", data = 0)
+    return render_template("league_home.html")
 
-@main.route("/lol/summoner")
-def summoner_api():
+#* Receives information from form -> summoner_api
+@main.route("/lol/search", methods=["POST"])
+def find_summoner():
+    server = request.form.get("server")
+    summoner_name = request.form.get("summoner")
+    return redirect(url_for("main.summoner_api", server=server, summoner_name=summoner_name))
+
+#* Gets LeaguePlayer and returns profile page
+@main.route("/lol/summoner/<server>/<summoner_name>")
+def summoner_api(server: str, summoner_name: str):
     try:
-        server = request.args.get("server", "na1")
-        summoner_name = request.args.get("summoner")
-        data = get_summoner(summoner_name, server)
+        playerSummoner = get_summoner(summoner_name, server)
     except Exception as e:
-        return "summoner_api() error"
-    return render_template("player_home.html", data=data)
+        return f"summoner_api() error: {e}"
+    return render_template("player_home.html", data=playerSummoner)
