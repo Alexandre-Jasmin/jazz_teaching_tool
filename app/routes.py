@@ -15,14 +15,12 @@ def classroom_home():
 def league_home():
     return render_template("league_home.html")
 
-#* Receives information from form -> summoner_api
 @main.route("/lol/search", methods=["POST"])
 def find_summoner():
     server = request.form.get("server")
     summoner_name = request.form.get("summoner")
     return redirect(url_for("main.summoner_api", server=server, summoner_name=summoner_name))
 
-#* Gets LeaguePlayer and returns profile page
 @main.route("/lol/summoner/<server>/<summoner_name>")
 def summoner_api(server: str, summoner_name: str):
     try:

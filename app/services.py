@@ -5,7 +5,7 @@ def create_classroom():
 
 def load_classroom(classroom_id: str):
     try:
-        loadedClassroom = Classroom(puuid=classroom_id) # we load an existing classroom
+        loadedClassroom = Classroom(puuid=classroom_id)
     except Exception as e:
         return None
     return loadedClassroom  

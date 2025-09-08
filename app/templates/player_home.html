@@ -1,7 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-<p>Name: {{ data.accountData["gameName"] }}#{{ data.accountData["tagLine"] }}</p>
-<p>Level: {{ data.summonerData["summonerLevel"] }}</p>
+<h2>{{ data.accountData["gameName"] }}#{{ data.accountData["tagLine"] }}</h2>
+<h3>Level: {{ data.summonerData["summonerLevel"] }}</h3>
+<h2>Champion Mastery</h2>
+<table id="myTable" class="display">
+    <thead>
+        <tr>
+            <th>Champion Name</th>
+            <th>Level</th>
+            <th>Points</th>
+            <th>Last played</th>
+            <th>Points until next level</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for champion in data.championData %}
+            <tr>
+                <td>{{ champion["championId"] }}</td>
+                <td>{{ champion["championLevel"] }}</td>
+                <td>{{ champion["championPoints"] }}</td>
+                <td>{{ champion["lastPlayTime"] }}</td>
+                <td>{{ champion["championPointsUntilNextLevel"] }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 
 <!-- <img src="{{ url_for('static', filename='imgs/champions/ahri.png') }}" alt="Ahri"> -->

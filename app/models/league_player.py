@@ -12,6 +12,11 @@ class LeaguePlayer():
         RIOT_API_INSTANCE.set_region(self.server)
         self.accountData = RIOT_API_INSTANCE.get_account(summoner_name=self.name, tag=self.tag)
         self.summonerData = RIOT_API_INSTANCE.get_summoner(puuid=self.accountData["puuid"])
+        #! add championName to every champion
+        #! sort by champion level from the start
+        #! format points 671,123
+        #! turn last played into a datetime
+        #! get required to go next level
         self.championData = RIOT_API_INSTANCE.get_champion_mastery(puuid=self.accountData["puuid"])
         self.challengesData = RIOT_API_INSTANCE.get_challenges(puuid=self.accountData["puuid"])
         
@@ -22,6 +27,3 @@ class LeaguePlayer():
 
     def refresh_stats():
         return 0 
-
-    #on init, load basic information
-    #check in database for information
