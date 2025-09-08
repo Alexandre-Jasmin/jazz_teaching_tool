@@ -256,6 +256,12 @@ class RiotAPI:
     def get_challenges(self, puuid):
         url = f"{self.platform_url}/lol/challenges/v1/player-data/{puuid}"
         return self._make_request(url)
+    
+    #*LOL-CHALLENGES-V1-CONFIG
+    #*Returns configuration of challenges
+    def get_challenges_config(self):
+        url = f"{self.platform_url}/lol/challenges/v1/challenges/config"
+        return self._make_request(url)
 
     #*MATCH-V5 [Match Id]
     #*Returns match information

@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+<img src="{{ data.accountPatch['cdn'] }}/{{ data.accountPatch['n']['profileicon'] }}/img/profileicon/{{ data.summonerData['profileIconId'] }}.png" width="64" height="64">
 <h2>{{ data.accountData["gameName"] }}#{{ data.accountData["tagLine"] }}</h2>
-<h3>Level: {{ data.summonerData["summonerLevel"] }}</h3>
+<p>Level: {{ data.summonerData["summonerLevel"] }}</p>
 <h2>Champion Mastery</h2>
-<table id="myTable" class="display">
+<table id="masteryTable" class="display">
     <thead>
         <tr>
             <th>Champion Name</th>
@@ -25,12 +26,37 @@
         {% endfor %}
     </tbody>
 </table>
+
+<h2>Challenges</h2>
+<p>{{ data.challengesData["totalPoints"]["level"] }}: {{ data.challengesData["totalPoints"]["current"] }} / {{ data.challengesData["totalPoints"]["max"] }}</p>
+<ul>
+    {% for category in data.challengesData["categoryPoints"] %}
+        <li>{{ category }}: {{ data.challengesData["categoryPoints"][category]["level"] }}</li>
+    {% endfor %}
+</ul>
+<table id="challengesTable" class="display">
+    <thead>
+        <tr>
+            <th>Challenge</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for challenge in data.challengesData["challenges"] %}
+        <tr>
+            <td>{{ challenge["title"] }}</td>
+            <td>{{ challenge["description"] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
 
 {% block js_specific %}
 <script>
     $(document).ready(function () {
-        $('#myTable').DataTable({
+        // Mastery table
+        $('#masteryTable').DataTable({
             "order": [[2, "desc"]],
             "pageLength": 10,
             'columnDefs': [{
@@ -41,6 +67,11 @@
                 "targets": 4,
                 "render": $.fn.dataTable.render.number(',', '.', 0)
             }]
+        });
+        // Challenges table
+        $('#challengesTable').DataTable({
+            "order": [[2, "desc"]],
+            "pageLength": 10
         });
     });
 </script>

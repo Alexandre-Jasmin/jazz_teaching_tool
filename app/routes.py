@@ -25,6 +25,7 @@ def find_summoner():
 def summoner_api(server: str, summoner_name: str):
     try:
         playerSummoner = get_summoner(summoner_name, server)
+        loadedPuuid = playerSummoner.accountData["puuid"]
     except Exception as e:
         return f"summoner_api() error: {e}"
     return render_template("player_home.html", data=playerSummoner)
