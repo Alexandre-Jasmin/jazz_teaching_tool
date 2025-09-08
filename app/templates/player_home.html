@@ -3,6 +3,7 @@
 <img src="{{ data.accountPatch['cdn'] }}/{{ data.accountPatch['n']['profileicon'] }}/img/profileicon/{{ data.summonerData['profileIconId'] }}.png" width="64" height="64">
 <h2>{{ data.accountData["gameName"] }}#{{ data.accountData["tagLine"] }}</h2>
 <p>Level: {{ data.summonerData["summonerLevel"] }}</p>
+<!-- Champion Mastery -->
 <h2>Champion Mastery</h2>
 <table id="masteryTable" class="display">
     <thead>
@@ -27,6 +28,7 @@
     </tbody>
 </table>
 
+<!-- Challenges -->
 <h2>Challenges</h2>
 <p>{{ data.challengesData["totalPoints"]["level"] }}: {{ data.challengesData["totalPoints"]["current"] }} / {{ data.challengesData["totalPoints"]["max"] }}</p>
 <ul>
@@ -39,6 +41,8 @@
         <tr>
             <th>Challenge</th>
             <th>Description</th>
+            <th>Value</th>
+            <th>Next Threshold</th>
         </tr>
     </thead>
     <tbody>
@@ -46,6 +50,8 @@
         <tr>
             <td>{{ challenge["title"] }}</td>
             <td>{{ challenge["description"] }}</td>
+            <td>{{ challenge["value"] }}</td>
+            <td>({{ challenge["next_thresholds"][1] }}) {{ challenge["next_thresholds"][0] }}</td>
         </tr>
         {% endfor %}
     </tbody>
@@ -70,8 +76,16 @@
         });
         // Challenges table
         $('#challengesTable').DataTable({
-            "order": [[2, "desc"]],
-            "pageLength": 10
+            //"order": [[2, "desc"]],
+            "pageLength": 10,
+            'columnDefs': [{
+                "targets": 2,
+                "render": $.fn.dataTable.render.number(',', '.', 0)
+            },
+            {
+                "targets": 3,
+                "render": $.fn.dataTable.render.number(',', '.', 0)
+            }]
         });
     });
 </script>
