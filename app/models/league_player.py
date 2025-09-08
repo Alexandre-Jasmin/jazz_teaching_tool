@@ -1,5 +1,5 @@
 import json
-from config import RIOT_API_INSTANCE, UTILITIES, Config
+from config import RIOT_API_INSTANCE, UTILITIES, Config, LEAGUE_CHAMPIONS
 
 class LeaguePlayer():
 
@@ -12,12 +12,18 @@ class LeaguePlayer():
         RIOT_API_INSTANCE.set_region(self.server)
         self.accountData = RIOT_API_INSTANCE.get_account(summoner_name=self.name, tag=self.tag)
         self.summonerData = RIOT_API_INSTANCE.get_summoner(puuid=self.accountData["puuid"])
-        #! add championName to every champion
-        #! sort by champion level from the start
-        #! format points 671,123
-        #! turn last played into a datetime
-        #! get required to go next level
+
+        #! get required grades to go next level
+
         self.championData = RIOT_API_INSTANCE.get_champion_mastery(puuid=self.accountData["puuid"])
+        champion_map = {}
+        for champion in LEAGUE_CHAMPIONS["data"].values():
+            champion_map[int(champion["key"])] = champion["name"]
+        for entry in self.championData:
+            champ_id = entry["championId"]
+            entry["championName"] = champion_map.get(champ_id, "Unknown")
+            entry["lastPlayTimePretty"] = UTILITIES.timestamp_to_date_time(int(entry["lastPlayTime"]))
+
         self.challengesData = RIOT_API_INSTANCE.get_challenges(puuid=self.accountData["puuid"])
         
         filename = "test.json"

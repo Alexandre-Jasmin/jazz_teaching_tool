@@ -9,3 +9,8 @@ class DataDragon:
 
         self.img_dir = Config.BASE_DIR / "app" / "static" / "imgs"
         self.data_dir = Config.DATA_DIR / "lol"
+
+    def update_latest_champion_json(self):
+        x = 0
+
+#! used in lol_manager.html page to update assets

@@ -15,16 +15,35 @@
     </thead>
     <tbody>
         {% for champion in data.championData %}
-            <tr>
-                <td>{{ champion["championId"] }}</td>
-                <td>{{ champion["championLevel"] }}</td>
-                <td>{{ champion["championPoints"] }}</td>
-                <td>{{ champion["lastPlayTime"] }}</td>
-                <td>{{ champion["championPointsUntilNextLevel"] }}</td>
-            </tr>
+        <tr>
+            <td>{{ champion["championName"] }}</td>
+            <td>{{ champion["championLevel"] }}</td>
+            <td>{{ champion["championPoints"] }}</td>
+            <td>{{ champion["lastPlayTimePretty"] }}</td>
+            <td>{{ champion["championPointsUntilNextLevel"] }}</td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
+{% endblock %}
+
+{% block js_specific %}
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            "order": [[2, "desc"]],
+            "pageLength": 10,
+            'columnDefs': [{
+                "targets": 2,
+                "render": $.fn.dataTable.render.number(',', '.', 0)
+            },
+            {
+                "targets": 4,
+                "render": $.fn.dataTable.render.number(',', '.', 0)
+            }]
+        });
+    });
+</script>
 {% endblock %}
 
 <!-- <img src="{{ url_for('static', filename='imgs/champions/ahri.png') }}" alt="Ahri"> -->
