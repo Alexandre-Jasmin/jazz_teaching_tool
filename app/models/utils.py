@@ -32,6 +32,7 @@ class Utilities:
             else:
                 time_string = f'{time_formatted} hours ago'
         elif difference > 60:# at least a minute
+            time_formatted = int(difference / 60)
             if time_formatted == 1:
                 time_string = f'{time_formatted} minute ago'
             else:

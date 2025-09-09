@@ -56,35 +56,40 @@ class LeaguePlayer():
                 matchData = RIOT_API_INSTANCE.get_match(match_id=match_id)
                 UTILITIES.dump_json_file(file_path, matchData)
 
-            player_index = matchData["metadata"]["participants"].index(
-                str(self.accountData["puuid"])
+            player_data = self._get_player_data(
+                matchData["info"]["participants"],
+                self.accountData["puuid"]
             )
-            player_data = matchData["info"]["participants"][player_index]
 
-            history_entry = {
-                "champion": player_data["championName"],
-                "level": player_data["champLevel"],
-                "kda_string": f"{player_data['kills']} / {player_data['deaths']} / {player_data['assists']}",
-                "kda": self._calculate_kda(
-                    player_data["kills"],
-                    player_data["deaths"],
-                    player_data["assists"]
-                ),
-                "queue": matchData["info"]["queueId"],
-                "queue_description": self._get_queue_description(
-                    matchData["info"]["queueId"]
-                ),
-                "when": matchData["info"]["gameEndTimestamp"],
-                "time_ago": UTILITIES.time_ago(
-                    datetime.fromtimestamp(
-                        matchData["info"]["gameEndTimestamp"] / 1000
-                    )
-                ),
-                "outcome": self._get_outcome(
-                    player_data["win"], outcome_dict
-                ),
-                "duration": matchData["info"]["gameDuration"],
-            }
+            try:
+                history_entry = {
+                    "champion": player_data.get("championName", "Unknown"),
+                    "level": player_data.get("champLevel", 0),
+                    "kda_string": f"{player_data.get('kills', 0)} / {player_data.get('deaths', 0)} / {player_data.get('assists', 0)}",
+                    "kda": self._calculate_kda(
+                        player_data.get("kills", 0),
+                        player_data.get("deaths", 0),
+                        player_data.get("assists", 0),
+                    ),
+                    "queue": matchData.get("info", {}).get("queueId", -1),
+                    "queue_description": self._get_queue_description(
+                        matchData.get("info", {}).get("queueId", -1)
+                    ),
+                    "when": matchData.get("info", {}).get("gameEndTimestamp", 0),
+                    "time_ago": UTILITIES.time_ago(
+                        datetime.fromtimestamp(
+                            matchData.get("info", {}).get("gameEndTimestamp", 0) / 1000
+                        )
+                    ) if matchData.get("info", {}).get("gameEndTimestamp") else "Unknown",
+                    "outcome": self._get_outcome(
+                        player_data.get("win", False), outcome_dict
+                    ),
+                    "duration": matchData.get("info", {}).get("gameDuration", 0),
+                }
+            except Exception as e:
+                print(e)
+                continue
+
             self.historyData.append(history_entry)
             self.matchesData.append(matchData)
 
@@ -130,7 +135,8 @@ class LeaguePlayer():
 
     @staticmethod
     def _calculate_kda(kills: int, deaths: int, assists: int) -> float:
-        return kills + assists if deaths == 0 else (kills + assists) / deaths
+        kda = kills + assists if deaths == 0 else (kills + assists) / deaths
+        return round(kda, 2)
     
     @staticmethod
     def _get_queue_description(queue_id: int) -> str:
@@ -152,3 +158,10 @@ class LeaguePlayer():
             if value < threshold_value:
                 return rank, threshold_value
         return "None", 0
+    
+    @staticmethod
+    def _get_player_data(participants: list[dict], my_puuid: str) -> dict:
+        for participant in participants:
+            if participant["puuid"] == my_puuid:
+                return participant
+        return {"status": "can't find information"}
