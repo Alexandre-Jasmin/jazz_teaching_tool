@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
-<img src="{{ data.accountPatch['cdn'] }}/{{ data.accountPatch['n']['profileicon'] }}/img/profileicon/{{ data.summonerData['profileIconId'] }}.png" width="64" height="64">
+<img src="{{ data.accountPatch['cdn'] }}/{{ data.accountPatch['n']['profileicon'] }}/img/profileicon/{{ data.summonerData['profileIconId'] }}.png"
+    width="64" height="64">
 <h2>{{ data.accountData["gameName"] }}#{{ data.accountData["tagLine"] }}</h2>
 <p>Level: {{ data.summonerData["summonerLevel"] }}</p>
 <!-- Champion Mastery -->
-<h2>Champion Mastery</h2>
+<h1>Champion Mastery</h1>
 <table id="masteryTable" class="display">
     <thead>
         <tr>
@@ -27,15 +28,10 @@
         {% endfor %}
     </tbody>
 </table>
-
 <!-- Challenges -->
-<h2>Challenges</h2>
-<p>{{ data.challengesData["totalPoints"]["level"] }}: {{ data.challengesData["totalPoints"]["current"] }} / {{ data.challengesData["totalPoints"]["max"] }}</p>
-<ul>
-    {% for category in data.challengesData["categoryPoints"] %}
-        <li>{{ category }}: {{ data.challengesData["categoryPoints"][category]["level"] }}</li>
-    {% endfor %}
-</ul>
+<h1>Challenges</h1>
+<p>{{ data.challengesData["totalPoints"]["level"] }}: {{ data.challengesData["totalPoints"]["current"] }} / {{
+    data.challengesData["totalPoints"]["max"] }}</p>
 <table id="challengesTable" class="display">
     <thead>
         <tr>
@@ -43,21 +39,23 @@
             <th>Description</th>
             <th>Value</th>
             <th>Next Threshold</th>
+            <th>Percentile</th>
         </tr>
     </thead>
     <tbody>
         {% for challenge in data.challengesData["challenges"] %}
         <tr>
-            <td>{{ challenge["title"] }}</td>
+            <td><img src="{{ url_for('static', filename='imgs/lol/challenges/' ~ challenge['challengeId'] ~ '-' ~ challenge['level'] ~ '.png') }}"
+                    alt="image" loading="lazy" width="32" height="32"> {{ challenge["title"] }}</td>
             <td>{{ challenge["description"] }}</td>
-            <td>{{ challenge["value"] }}</td>
-            <td>({{ challenge["next_thresholds"][1] }}) {{ challenge["next_thresholds"][0] }}</td>
+            <td>{{ challenge["value"] }} / {{ challenge["next_thresholds"][1] }}</td>
+            <td>{{ challenge["next_thresholds"][0] }}</td>
+            <td>{{ challenge["percentile"] }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 {% endblock %}
-
 {% block js_specific %}
 <script>
     $(document).ready(function () {
@@ -78,17 +76,9 @@
         $('#challengesTable').DataTable({
             //"order": [[2, "desc"]],
             "pageLength": 10,
-            'columnDefs': [{
-                "targets": 2,
-                "render": $.fn.dataTable.render.number(',', '.', 0)
-            },
-            {
-                "targets": 3,
-                "render": $.fn.dataTable.render.number(',', '.', 0)
-            }]
+            "order": [[4]],
+            'columnDefs': []
         });
     });
 </script>
 {% endblock %}
-
-<!-- <img src="{{ url_for('static', filename='imgs/champions/ahri.png') }}" alt="Ahri"> -->

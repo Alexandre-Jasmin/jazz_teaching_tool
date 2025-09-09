@@ -51,7 +51,7 @@ class LeaguePlayer():
             if next_thresholds: 
                 challenge["next_thresholds"] = next_thresholds[0]
             else:
-                challenge["next_thresholds"] = "None"
+                challenge["next_thresholds"] = ("None", 0)
 
     def _process_champions(self):
         champion_map = self._build_champion_map()

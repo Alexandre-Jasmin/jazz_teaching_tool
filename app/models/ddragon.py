@@ -13,4 +13,8 @@ class DataDragon:
     def update_latest_champion_json(self):
         x = 0
 
-#! used in lol_manager.html page to update assets
+    def update_latest_challenges_images(self):
+        x = 0
+
+    def update_champion_icons(self):
+        x = 0

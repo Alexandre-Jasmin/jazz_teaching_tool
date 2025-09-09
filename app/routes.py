@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, send_from_directory
 from .services import load_classroom, get_summoner
+from config import Config
 
 main = Blueprint("main", __name__)
 
@@ -23,9 +24,5 @@ def find_summoner():
 
 @main.route("/lol/summoner/<server>/<summoner_name>")
 def summoner_api(server: str, summoner_name: str):
-    try:
-        playerSummoner = get_summoner(summoner_name, server)
-        loadedPuuid = playerSummoner.accountData["puuid"]
-    except Exception as e:
-        return f"summoner_api() error: {e}"
+    playerSummoner = get_summoner(summoner_name, server)
     return render_template("player_home.html", data=playerSummoner)

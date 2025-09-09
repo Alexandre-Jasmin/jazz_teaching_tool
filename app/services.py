@@ -13,6 +13,7 @@ def load_classroom(classroom_id: str):
 def get_summoner(summoner_name: str, server: str):
     try:
         loadedPlayer = LeaguePlayer(summoner_name, server)
+        loadedPuuid = loadedPlayer.accountData["puuid"]
     except Exception as e:
         return None
     return loadedPlayer
