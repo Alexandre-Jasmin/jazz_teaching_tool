@@ -1,12 +1,21 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, send_from_directory
 from .services import load_classroom, get_summoner
 from config import Config
+import markdown, os
 
 main = Blueprint("main", __name__)
 
 @main.route("/")
 def index():
     return render_template("index.html")
+
+@main.route("/docs")
+def show_documentation():
+    doc_path = os.path.join(Config.BASE_DIR, "documentation.md")
+    with open(doc_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    html = markdown.markdown(content)
+    return render_template("docs.html", content=html)
 
 @main.route("/classroom")
 def classroom_home():

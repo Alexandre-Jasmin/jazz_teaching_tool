@@ -117,7 +117,7 @@ class LeaguePlayer():
                 }
             )
 
-    def _process_champions(self):
+    def _process_champions(self) -> None:
         champion_map = self._build_champion_map()
         for entry in self.championData:
             champ_id = entry["championId"]
