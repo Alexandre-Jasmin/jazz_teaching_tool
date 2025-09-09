@@ -1,57 +1,121 @@
 import json
-from config import RIOT_API_INSTANCE, UTILITIES, Config, LEAGUE_CHAMPIONS, LOL_CHALLENGES_CONFIG
+from datetime import datetime
+from config import (
+    RIOT_API_INSTANCE,
+    UTILITIES,
+    Config,
+    LEAGUE_CHAMPIONS,
+    LOL_CHALLENGES_CONFIG, 
+    QUEUES
+)
 
 class LeaguePlayer():
 
-    def __init__(self, summoner_name: str, server: str):
-
+    def __init__(self, summoner_name: str, server: str) -> None:
         self.summoner_name = summoner_name
         self.server = server
         self.name, self.tag = UTILITIES.split_summoner_name(self.summoner_name)
 
         RIOT_API_INSTANCE.set_region(self.server)
-
         self.accountPatch = RIOT_API_INSTANCE.get_current_server_versions()
-        self.accountData = RIOT_API_INSTANCE.get_account(summoner_name=self.name, tag=self.tag)
-        self.summonerData = RIOT_API_INSTANCE.get_summoner(puuid=self.accountData["puuid"])
-        self.championData = RIOT_API_INSTANCE.get_champion_mastery(puuid=self.accountData["puuid"])
-        self.challengesData = RIOT_API_INSTANCE.get_challenges(puuid=self.accountData["puuid"])
+
+        self.accountData = RIOT_API_INSTANCE.get_account(
+            summoner_name=self.name, tag=self.tag
+        )
+        self.summonerData = RIOT_API_INSTANCE.get_summoner(
+            puuid=self.accountData["puuid"]
+        )
+        self.championData = RIOT_API_INSTANCE.get_champion_mastery(
+            puuid=self.accountData["puuid"]
+        )
+        self.challengesData = RIOT_API_INSTANCE.get_challenges(
+            puuid=self.accountData["puuid"]
+        )
+        self.matchData = RIOT_API_INSTANCE.get_matches_by_puuid(
+            puuid=self.accountData["puuid"]
+        )
+
+        self.matchesData: list[dict] = []
+        self.historyData: list[dict] = []
         self.challengesConfig = LOL_CHALLENGES_CONFIG
 
         self._process_champions()
         self._process_challenges()
+        self._process_matches()
 
-        #filename = "test.json"
-        #path = Config.get_data_path(filename)
+    def _process_matches(self) -> None:
 
-    def _process_challenges(self):
-        challengesDict = {}
+        outcome_dict = {"Win": True, "Loss": False}
 
-        for definition in self.challengesConfig:
-            challengeId = definition["id"]
-            name = definition["localizedNames"]["en_US"]["name"]
-            description = definition["localizedNames"]["en_US"]["description"]
-            thresholds = definition["thresholds"]
-            sorted_thresholds = sorted(thresholds.items(), key=lambda x: x[1])
-            challengesDict[challengeId] = {"title": name, "description": description, "thresholds": sorted_thresholds}
+        for match_id in self.matchData:
+            file_path = Config.MATCHES_DIR / f"{match_id}.json"
+
+            if file_path.exists():
+                matchData = UTILITIES.read_json_file(file_path)
+            else:
+                matchData = RIOT_API_INSTANCE.get_match(match_id=match_id)
+                UTILITIES.dump_json_file(file_path, matchData)
+
+            player_index = matchData["metadata"]["participants"].index(
+                str(self.accountData["puuid"])
+            )
+            player_data = matchData["info"]["participants"][player_index]
+
+            history_entry = {
+                "champion": player_data["championName"],
+                "level": player_data["champLevel"],
+                "kda_string": f"{player_data['kills']} / {player_data['deaths']} / {player_data['assists']}",
+                "kda": self._calculate_kda(
+                    player_data["kills"],
+                    player_data["deaths"],
+                    player_data["assists"]
+                ),
+                "queue": matchData["info"]["queueId"],
+                "queue_description": self._get_queue_description(
+                    matchData["info"]["queueId"]
+                ),
+                "when": matchData["info"]["gameEndTimestamp"],
+                "time_ago": UTILITIES.time_ago(
+                    datetime.fromtimestamp(
+                        matchData["info"]["gameEndTimestamp"] / 1000
+                    )
+                ),
+                "outcome": self._get_outcome(
+                    player_data["win"], outcome_dict
+                ),
+                "duration": matchData["info"]["gameDuration"],
+            }
+            self.historyData.append(history_entry)
+            self.matchesData.append(matchData)
+
+    def _process_challenges(self) -> None:
+        
+        challenge_defs = {
+            definition["id"]: {
+                "title": definition["localizedNames"]["en_US"]["name"],
+                "description": definition["localizedNames"]["en_US"]["description"],
+                "thresholds": sorted(
+                    definition["thresholds"].items(), key=lambda x: x[1]
+                ),
+            }
+            for definition in self.challengesConfig
+        }
 
         for challenge in self.challengesData["challenges"]:
-
-            challengeId = challenge["challengeId"]
-
-            if challengeId in challengesDict:
-                challenge["title"] = challengesDict[challengeId]["title"]
-                challenge["description"] = challengesDict[challengeId]["description"]
-                challenge["threshold"] = challengesDict[challengeId]["thresholds"]
-
-            next_thresholds = []
-            for rank, value in challenge["threshold"]:
-                if challenge['value'] < value:
-                    next_thresholds.append((rank, value))
-            if next_thresholds: 
-                challenge["next_thresholds"] = next_thresholds[0]
-            else:
-                challenge["next_thresholds"] = ("None", 0)
+            challenge_id = challenge["challengeId"]
+            if challenge_id not in challenge_defs:
+                continue
+            meta = challenge_defs[challenge_id]
+            challenge.update(
+                {
+                    "title": meta["title"],
+                    "description": meta["description"],
+                    "threshold": meta["thresholds"],
+                    "next_thresholds": self._get_next_threshold(
+                        challenge["value"], meta["thresholds"]
+                    ),
+                }
+            )
 
     def _process_champions(self):
         champion_map = self._build_champion_map()
@@ -61,5 +125,30 @@ class LeaguePlayer():
             entry["lastPlayTimePretty"] = UTILITIES.timestamp_to_date_time(int(entry["lastPlayTime"]))
 
     @staticmethod
-    def _build_champion_map():
+    def _build_champion_map() -> dict[int, str]:
         return {int(champ["key"]): champ["name"] for champ in LEAGUE_CHAMPIONS["data"].values()}
+
+    @staticmethod
+    def _calculate_kda(kills: int, deaths: int, assists: int) -> float:
+        return kills + assists if deaths == 0 else (kills + assists) / deaths
+    
+    @staticmethod
+    def _get_queue_description(queue_id: int) -> str:
+        for q in QUEUES:
+            if q["queueId"] == queue_id:
+                return q["description"]
+        return "Private Custom Game"
+    
+    @staticmethod
+    def _get_outcome(win_flag: bool, outcome_dict: dict[str, bool]) -> str:
+        return next(
+            (label for label, value in outcome_dict.items() if value == win_flag),
+            "Unknown outcome"
+        )
+    
+    @staticmethod
+    def _get_next_threshold(value: float, thresholds: list[tuple[str, float]]) -> tuple[str, float]:
+        for rank, threshold_value in thresholds:
+            if value < threshold_value:
+                return rank, threshold_value
+        return "None", 0

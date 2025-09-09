@@ -1,4 +1,4 @@
-import re
+import re, json
 from datetime import datetime
 
 class Utilities:
@@ -18,7 +18,7 @@ class Utilities:
         compared_time = datetime.now()
         if event_time > compared_time:
             return 'How did you play in the future?'
-        difference = compared_time-event_time # in seconds, is always positive 
+        difference = (compared_time-event_time).total_seconds()
         if difference > 86400: # at least a day ago
             time_formatted = int(difference/86400)
             if time_formatted == 1:
@@ -50,3 +50,11 @@ class Utilities:
             suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(day % 10, 'th')
         formatted_date = dt.strftime(f'%A, %B {day}{suffix} %Y %H:%M')
         return formatted_date
+    
+    def read_json_file(self, file_path):
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+
+    def dump_json_file(self, file_path, my_data):
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(my_data, f, indent=4)

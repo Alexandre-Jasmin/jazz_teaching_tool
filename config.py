@@ -11,6 +11,7 @@ class Config:
     # --- Directories ---
     BASE_DIR = Path(__file__).resolve().parent
     DATA_DIR = BASE_DIR / "data"
+    MATCHES_DIR = DATA_DIR / "lol" / "matches"
 
     # --- Secrets & API keys ---
     RIOT_API_KEY = os.getenv("RIOT_API_KEY")
@@ -25,3 +26,4 @@ RIOT_API_INSTANCE = RiotAPI(Config.RIOT_API_KEY)
 UTILITIES = Utilities()
 LEAGUE_CHAMPIONS = json.load(open(Config.get_data_path("lol/champions.json"), encoding="utf-8"))
 LOL_CHALLENGES_CONFIG = RIOT_API_INSTANCE.get_challenges_config()
+QUEUES = RIOT_API_INSTANCE.get_queues()

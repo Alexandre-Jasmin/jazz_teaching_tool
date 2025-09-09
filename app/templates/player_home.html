@@ -4,8 +4,32 @@
     width="64" height="64">
 <h2>{{ data.accountData["gameName"] }}#{{ data.accountData["tagLine"] }}</h2>
 <p>Level: {{ data.summonerData["summonerLevel"] }}</p>
+<!-- Match History -->
+<h1 align="center">Match History</h1>
+<table id="historyTable" class="display">
+    <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>Queue</th>
+            <th>When</th>
+            <th>Outcome</th>
+            <th>Champion</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for i in range(data.matchesData|length) %}
+        <tr>
+            <td>{{ data.historyData[i]["when"] }}</td>
+            <td>{{ data.historyData[i]["queue_description"] }}</td>
+            <td>{{ data.historyData[i]["time_ago"] }}</td>
+            <td>{{ data.historyData[i]["outcome"] }}</td>
+            <td>{{ data.historyData[i]["champion"] }} ({{data.historyData[i]["kda_string"]}}) [{{data.historyData[i]["kda"]}}:1 KDA]</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 <!-- Champion Mastery -->
-<h1>Champion Mastery</h1>
+<h1 align="center">Champion Mastery</h1>
 <table id="masteryTable" class="display">
     <thead>
         <tr>
@@ -29,7 +53,7 @@
     </tbody>
 </table>
 <!-- Challenges -->
-<h1>Challenges</h1>
+<h1 align="center">Challenges</h1>
 <p>{{ data.challengesData["totalPoints"]["level"] }}: {{ data.challengesData["totalPoints"]["current"] }} / {{
     data.challengesData["totalPoints"]["max"] }}</p>
 <table id="challengesTable" class="display">
@@ -78,6 +102,15 @@
             "pageLength": 10,
             "order": [[4]],
             'columnDefs': []
+        });
+        // History table
+        $('#historyTable').DataTable({
+            "order": [[0, "desc"]],
+            "pageLength": 10,
+            //"order": [[4]],
+            'columnDefs': [
+                { "targets": 0, "visible": false }
+            ]
         });
     });
 </script>
