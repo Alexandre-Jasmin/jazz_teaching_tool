@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% block title %}
-jaZZ - Docs
+jaZZ - Match
 {% endblock %}
+
 {% block content %}
-<div class="markdown-body">
-  {{ content|safe }}
-</div>
+    <p>{{ data.data }}</p>
+{% endblock %}
+
+{% block js_specific %}
 {% endblock %}

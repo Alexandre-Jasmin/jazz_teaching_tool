@@ -1,9 +1,14 @@
 {% extends "base.html" %}
+{% block title %}
+jaZZ - {{ data.accountData["gameName"] }}
+{% endblock %}
 {% block content %}
+<div align="center">
 <img src="{{ data.accountPatch['cdn'] }}/{{ data.accountPatch['n']['profileicon'] }}/img/profileicon/{{ data.summonerData['profileIconId'] }}.png"
     width="64" height="64">
 <h2>{{ data.accountData["gameName"] }}#{{ data.accountData["tagLine"] }}</h2>
 <p>Level: {{ data.summonerData["summonerLevel"] }}</p>
+</div>
 <!-- Match History -->
 <h1 align="center">Match History</h1>
 <table id="historyTable" class="display">
@@ -13,17 +18,21 @@
             <th>Queue</th>
             <th>When</th>
             <th>Outcome</th>
+            <th>KDA</th>
             <th>Champion</th>
+            <th>ID</th>
         </tr>
     </thead>
     <tbody>
-        {% for i in range(data.matchesData|length) %}
+        {% for i in range(data.historyData|length) %}
         <tr>
             <td>{{ data.historyData[i]["when"] }}</td>
             <td>{{ data.historyData[i]["queue_description"] }}</td>
             <td>{{ data.historyData[i]["time_ago"] }}</td>
             <td>{{ data.historyData[i]["outcome"] }}</td>
-            <td>{{ data.historyData[i]["champion"] }} ({{data.historyData[i]["kda_string"]}}) [{{data.historyData[i]["kda"]}}:1 KDA]</td>
+            <td>{{ data.historyData[i]["kda"] }}</td>
+            <td>{{ data.historyData[i]["champion"] }} ({{data.historyData[i]["kda_string"]}})</td>
+            <td><a href="#">{{ data.historyData[i]["platform_id"] }}_{{ data.historyData[i]["match_id"] }}</a></td>
         </tr>
         {% endfor %}
     </tbody>

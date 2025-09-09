@@ -1,4 +1,4 @@
-from .models import Classroom, LeaguePlayer
+from .models import Classroom, LeaguePlayer, LeagueMatch
 
 def create_classroom():
     return
@@ -19,4 +19,8 @@ def get_summoner(summoner_name: str, server: str):
     return loadedPlayer
 
 def get_match_data(match_id: str):
-    return 0
+    try:
+        loadedMatch = LeagueMatch(match_id)
+    except Exception as e:
+        return None
+    return loadedMatch

@@ -32,7 +32,8 @@ class LeaguePlayer():
             puuid=self.accountData["puuid"]
         )
         self.matchData = RIOT_API_INSTANCE.get_matches_by_puuid(
-            puuid=self.accountData["puuid"]
+            puuid=self.accountData["puuid"],
+            count=50
         )
 
         self.matchesData: list[dict] = []
@@ -63,6 +64,8 @@ class LeaguePlayer():
 
             try:
                 history_entry = {
+                    "match_id": matchData["info"]["gameId"],
+                    "platform_id": matchData["info"]["platformId"],
                     "champion": player_data.get("championName", "Unknown"),
                     "level": player_data.get("champLevel", 0),
                     "kda_string": f"{player_data.get('kills', 0)} / {player_data.get('deaths', 0)} / {player_data.get('assists', 0)}",

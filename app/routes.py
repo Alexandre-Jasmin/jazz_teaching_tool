@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, send_from_directory
-from .services import load_classroom, get_summoner
+from .services import load_classroom, get_summoner, get_match_data
 from config import Config
 import markdown, os
 
@@ -35,3 +35,8 @@ def find_summoner():
 def summoner_api(server: str, summoner_name: str):
     playerSummoner = get_summoner(summoner_name, server)
     return render_template("player_home.html", data=playerSummoner)
+
+@main.route("/lol/match/<match_id>")
+def lol_match_api(match_id: str):
+    myMatch = get_match_data(match_id)
+    return render_template("match_information.html", data=myMatch)
