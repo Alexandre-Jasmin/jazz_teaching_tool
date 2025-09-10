@@ -1,126 +1,146 @@
 {% extends "base.html" %}
+
 {% block title %}
-jaZZ - {{ data.accountData["gameName"] }}
+    jaZZ - {{ data.accountData["gameName"] }}
 {% endblock %}
+
 {% block content %}
-<div align="center">
-<img src="{{ data.accountPatch['cdn'] }}/{{ data.accountPatch['n']['profileicon'] }}/img/profileicon/{{ data.summonerData['profileIconId'] }}.png"
-    width="64" height="64">
-<h2>{{ data.accountData["gameName"] }}#{{ data.accountData["tagLine"] }}</h2>
-<p>Level: {{ data.summonerData["summonerLevel"] }}</p>
-</div>
-<!-- Match History -->
-<h1 align="center">Match History</h1>
-<table id="historyTable" class="display">
-    <thead>
-        <tr>
-            <th>Timestamp</th>
-            <th>Queue</th>
-            <th>When</th>
-            <th>Outcome</th>
-            <th>KDA</th>
-            <th>Champion</th>
-            <th>ID</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for i in range(data.historyData|length) %}
-        <tr>
-            <td>{{ data.historyData[i]["when"] }}</td>
-            <td>{{ data.historyData[i]["queue_description"] }}</td>
-            <td>{{ data.historyData[i]["time_ago"] }}</td>
-            <td>{{ data.historyData[i]["outcome"] }}</td>
-            <td>{{ data.historyData[i]["kda"] }}</td>
-            <td>{{ data.historyData[i]["champion"] }} ({{data.historyData[i]["kda_string"]}})</td>
-            <td><a href="#">{{ data.historyData[i]["platform_id"] }}_{{ data.historyData[i]["match_id"] }}</a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<!-- Champion Mastery -->
-<h1 align="center">Champion Mastery</h1>
-<table id="masteryTable" class="display">
-    <thead>
-        <tr>
-            <th>Champion Name</th>
-            <th>Level</th>
-            <th>Points</th>
-            <th>Last played</th>
-            <th>Points until next level</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for champion in data.championData %}
-        <tr>
-            <td>{{ champion["championName"] }}</td>
-            <td>{{ champion["championLevel"] }}</td>
-            <td>{{ champion["championPoints"] }}</td>
-            <td>{{ champion["lastPlayTimePretty"] }}</td>
-            <td>{{ champion["championPointsUntilNextLevel"] }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-<!-- Challenges -->
-<h1 align="center">Challenges</h1>
-<p>{{ data.challengesData["totalPoints"]["level"] }}: {{ data.challengesData["totalPoints"]["current"] }} / {{
-    data.challengesData["totalPoints"]["max"] }}</p>
-<table id="challengesTable" class="display">
-    <thead>
-        <tr>
-            <th>Challenge</th>
-            <th>Description</th>
-            <th>Value</th>
-            <th>Next Threshold</th>
-            <th>Percentile</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for challenge in data.challengesData["challenges"] %}
-        <tr>
-            <td><img src="{{ url_for('static', filename='imgs/lol/challenges/' ~ challenge['challengeId'] ~ '-' ~ challenge['level'] ~ '.png') }}"
-                    alt="image" loading="lazy" width="32" height="32"> {{ challenge["title"] }}</td>
-            <td>{{ challenge["description"] }}</td>
-            <td>{{ challenge["value"] }} / {{ challenge["next_thresholds"][1] }}</td>
-            <td>{{ challenge["next_thresholds"][0] }}</td>
-            <td>{{ challenge["percentile"] }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+
+    <!-- Profile -->
+    <div>
+        <img src="{{ data.accountPatch['cdn'] }}/{{ data.accountPatch['n']['profileicon'] }}/img/profileicon/{{ data.summonerData['profileIconId'] }}.png"
+            width="64" height="64">
+        <h2>{{ data.accountData["gameName"] }}#{{ data.accountData["tagLine"] }}</h2>
+        <p>Level: {{ data.summonerData["summonerLevel"] }}</p>
+    </div>
+
+    <!-- Rank -->
+    {% for entry in data.rankedData %}
+        <p>{{ entry["queueType"] }} - {{ entry["tier"] }} {{ entry["rank"] }} {{ entry["leaguePoints"] }}LP ({{ entry["wins"] }}W/{{ entry["losses"] }}L) {{ entry["winrate"] }}%</p>
+    {% endfor %}
+
+    <!-- Match History -->
+    <h1 align="center">Match History</h1>
+    <table id="historyTable" class="display">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Champion Name</th>
+                <th>Queue</th>
+                <th>When</th>
+                <th>Outcome</th>
+                <th>KDA</th>
+                <th>Champion</th>
+                <th>ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(data.historyData|length) %}
+            <tr>
+                <td>{{ data.historyData[i]["when"] }}</td>
+                <td>{{ data.historyData[i]['champion'] }}</td>
+                <td>{{ data.historyData[i]["queue_description"] }}</td>
+                <td>{{ data.historyData[i]["time_ago"] }}</td>
+                <td>{{ data.historyData[i]["outcome"] }} ({{data.historyData[i]["kda_string"]}})</td>
+                <td>{{ data.historyData[i]["kda"] }}</td>
+                <td><img src="{{ url_for('static', filename='imgs/lol/champion/' ~ data.historyData[i]['champion'] ~ '.png') }}"
+                        alt="image" loading="lazy" width="32" height="32"></td>
+                <td><a href="{{ url_for('main.lol_match_api', match_id=data.matchesData[i]['metadata']['matchId']) }}">{{ data.historyData[i]["platform_id"] }}_{{ data.historyData[i]["match_id"] }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Champion Mastery -->
+    <h1 align="center">Champion Mastery</h1>
+    <table id="masteryTable" class="display">
+        <thead>
+            <tr>
+                <th>Champion Name</th>
+                <th>Level</th>
+                <th>Points</th>
+                <th>Last played</th>
+                <th>Points until next level</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for champion in data.championData %}
+            <tr>
+                <td>{{ champion["championName"] }}</td>
+                <td>{{ champion["championLevel"] }}</td>
+                <td>{{ champion["championPoints"] }}</td>
+                <td>{{ champion["lastPlayTimePretty"] }}</td>
+                <td>{{ champion["championPointsUntilNextLevel"] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Challenges -->
+    <h1 align="center">Challenges</h1>
+    <p>{{ data.challengesData["totalPoints"]["level"] }}: {{ data.challengesData["totalPoints"]["current"] }} / {{
+        data.challengesData["totalPoints"]["max"] }}</p>
+    <table id="challengesTable" class="display">
+        <thead>
+            <tr>
+                <th>Challenge</th>
+                <th>Description</th>
+                <th>Value</th>
+                <th>Next Threshold</th>
+                <th>Percentile</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for challenge in data.challengesData["challenges"] %}
+            <tr>
+                <td><img src="{{ url_for('static', filename='imgs/lol/challenges/' ~ challenge['challengeId'] ~ '-' ~ challenge['level'] ~ '.png') }}"
+                        alt="image" loading="lazy" width="32" height="32"> {{ challenge["title"] }}</td>
+                <td>{{ challenge["description"] }}</td>
+                <td>{{ challenge["value"] }} / {{ challenge["next_thresholds"][1] }}</td>
+                <td>{{ challenge["next_thresholds"][0] }}</td>
+                <td>{{ challenge["percentile"] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock %}
+
 {% block js_specific %}
-<script>
-    $(document).ready(function () {
-        // Mastery table
-        $('#masteryTable').DataTable({
-            "order": [[2, "desc"]],
-            "pageLength": 10,
-            'columnDefs': [{
-                "targets": 2,
-                "render": $.fn.dataTable.render.number(',', '.', 0)
-            },
-            {
-                "targets": 4,
-                "render": $.fn.dataTable.render.number(',', '.', 0)
-            }]
+
+    <script>
+        $(document).ready(function () {
+            // Mastery table
+            $('#masteryTable').DataTable({
+                "order": [[2, "desc"]],
+                "pageLength": 10,
+                'columnDefs': [{
+                    "targets": 2,
+                    "render": $.fn.dataTable.render.number(',', '.', 0)
+                },
+                {
+                    "targets": 4,
+                    "render": $.fn.dataTable.render.number(',', '.', 0)
+                }]
+            });
+            // Challenges table
+            $('#challengesTable').DataTable({
+                //"order": [[2, "desc"]],
+                "pageLength": 10,
+                "order": [[4]],
+                'columnDefs': []
+            });
+            // History table
+            $('#historyTable').DataTable({
+                "order": [[0, "desc"]],
+                "pageLength": 10,
+                //"order": [[4]],
+                'columnDefs': [
+                    { "targets": 0, "visible": false },
+                    { "targets": 1, "visible": false}
+                ]
+            });
         });
-        // Challenges table
-        $('#challengesTable').DataTable({
-            //"order": [[2, "desc"]],
-            "pageLength": 10,
-            "order": [[4]],
-            'columnDefs': []
-        });
-        // History table
-        $('#historyTable').DataTable({
-            "order": [[0, "desc"]],
-            "pageLength": 10,
-            //"order": [[4]],
-            'columnDefs': [
-                { "targets": 0, "visible": false }
-            ]
-        });
-    });
-</script>
+    </script>
+
 {% endblock %}

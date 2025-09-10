@@ -1,7 +1,9 @@
 {% extends "base.html" %}
+
 {% block title %}
-jaZZ - League Search
+    jaZZ - League Search
 {% endblock %}
+
 {% block content %}
     <h1>League of Legends API</h1>
     <h2>Search for player</h2>
@@ -13,10 +15,9 @@ jaZZ - League Search
         <select name="server" id="server">
             <option value="na1">NA</option>
             <option value="euw1">EUW</option>
+            <option value="kr">KR</option>
         </select>
 
         <button type="submit">Search</button>
     </form>
-
-    <h2>Ladder</h2>
 {% endblock %}

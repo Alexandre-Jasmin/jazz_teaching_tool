@@ -1,12 +1,10 @@
 import requests, time, os, re
 
-#! Fix recurring current_version. Cache version on object init
-
 #*RiotAPI class to interact with the Riot Games API
 class RiotAPI:
 
     #*Init the object
-    def __init__(self, api_key, region="na1"):
+    def __init__(self, api_key: str, region: str = "na1") -> None:
 
         self.region_to_platform = {
             "na1": "https://na1.api.riotgames.com",
@@ -98,7 +96,6 @@ class RiotAPI:
         retry_count = 0
         while retry_count < retries:
             response = requests.get(url, headers=headers, timeout=10)
-            #The endpoints has a limit, sleep
             if not url.startswith((self.ddragon_url, self.static_url)):
                 time.sleep(self.retry_delay)
             if response.status_code == 200:
@@ -108,11 +105,9 @@ class RiotAPI:
             else:
                 retry_count += 1
                 time.sleep(self.retry_delay * (2 ** (retry_count - 1)))
-
         return None
 
     def _handle_response(self, response):
-
         if not response:
             return None
         elif response.status_code == 200:
@@ -121,7 +116,6 @@ class RiotAPI:
             return None
 
     def _make_request(self, url, retries=5):
-
         if not url or not isinstance(url, str):
             raise ValueError("Invalid URL provided.")
         if retries < 1:
@@ -219,10 +213,10 @@ class RiotAPI:
         url = f"{self.platform_url}/lol/champion-mastery/v4/champion-masteries/by-puuid/{puuid}/top?count={amount}"
         return self._make_request(url)
 
-    #*LEAGUE-V4 [Summoner Id]
+    #*LEAGUE-V4 [PUUID]
     #*Returns league entries
-    def get_league_entries_by_summoner_id(self, summoner_id):
-        url = f"{self.platform_url}/lol/league/v4/entries/by-summoner/{summoner_id}"
+    def get_league_entries_by_puuid(self, puuid: str):
+        url = f"{self.platform_url}/lol/league/v4/entries/by-puuid/{puuid}"
         return self._make_request(url)
     
     #*LEAGUE-V4/GRAND LEAGUES

@@ -12,6 +12,7 @@ class Config:
     BASE_DIR = Path(__file__).resolve().parent
     DATA_DIR = BASE_DIR / "data"
     MATCHES_DIR = DATA_DIR / "lol" / "matches"
+    DOCS_FILE = BASE_DIR / "documentation.md"
 
     # --- Secrets & API keys ---
     RIOT_API_KEY = os.getenv("RIOT_API_KEY")
@@ -20,6 +21,10 @@ class Config:
     @classmethod
     def get_data_path(cls, filename: str) -> Path:
         return cls.DATA_DIR / filename
+    
+    @classmethod
+    def load_docs(cls) -> str:
+        return cls.DOCS_FILE.read_text(encoding="utf-8")
 
 # --- Global singletons ---
 RIOT_API_INSTANCE = RiotAPI(Config.RIOT_API_KEY)

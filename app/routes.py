@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, send_from_directory
 from .services import load_classroom, get_summoner, get_match_data
+from .errors import SummonerNotFound, MatchNotFound
 from config import Config
 import markdown, os
 
@@ -11,9 +12,7 @@ def index():
 
 @main.route("/docs")
 def show_documentation():
-    doc_path = os.path.join(Config.BASE_DIR, "documentation.md")
-    with open(doc_path, "r", encoding="utf-8") as f:
-        content = f.read()
+    content = Config.load_docs()
     html = markdown.markdown(content)
     return render_template("docs.html", content=html)
 
@@ -33,10 +32,20 @@ def find_summoner():
 
 @main.route("/lol/summoner/<server>/<summoner_name>")
 def summoner_api(server: str, summoner_name: str):
-    playerSummoner = get_summoner(summoner_name, server)
-    return render_template("player_home.html", data=playerSummoner)
+    try:
+        playerSummoner = get_summoner(summoner_name, server)
+        return render_template("player_home.html", data=playerSummoner)
+    except SummonerNotFound as e:
+        return render_template("error.html", message=str(e)), 404
+    except Exception as e:
+        return render_template("error.html", message=str(e)), 500
 
 @main.route("/lol/match/<match_id>")
 def lol_match_api(match_id: str):
-    myMatch = get_match_data(match_id)
-    return render_template("match_information.html", data=myMatch)
+    try:
+        myMatch = get_match_data(match_id)
+        return render_template("match_information.html", data=myMatch)
+    except MatchNotFound as e:
+        return render_template("error.html", message=str(e)), 404
+    except Exception as e:
+        return render_template("error.html", message=str(e)), 500

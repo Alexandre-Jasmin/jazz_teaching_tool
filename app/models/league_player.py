@@ -35,6 +35,9 @@ class LeaguePlayer():
             puuid=self.accountData["puuid"],
             count=50
         )
+        self.rankedData = RIOT_API_INSTANCE.get_league_entries_by_puuid(
+            self.accountData["puuid"]
+        )
 
         self.matchesData: list[dict] = []
         self.historyData: list[dict] = []
@@ -43,6 +46,16 @@ class LeaguePlayer():
         self._process_champions()
         self._process_challenges()
         self._process_matches()
+        self._process_rank()
+
+    def _process_rank(self) -> None:
+        for entry in self.rankedData:
+            bottom = entry["wins"]+entry["losses"]
+            if bottom <= 0:
+                entry["winrate"] = 0
+            else:
+                winrate = (entry["wins"]/(entry["wins"]+entry["losses"]))*100
+                entry["winrate"] = round(winrate, 1)
 
     def _process_matches(self) -> None:
 
