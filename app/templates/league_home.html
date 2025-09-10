@@ -5,9 +5,11 @@
 {% endblock %}
 
 {% block content %}
+
     <h1>League of Legends API</h1>
     <h2>Search for player</h2>
-    <form action="/lol/search" method="post">
+
+    <form id="searchForm" action="/lol/search" method="post">
         <label for="summoner">Summoner:</label>
         <input type="text" id="summoner" name="summoner" required>
 
@@ -20,4 +22,24 @@
 
         <button type="submit">Search</button>
     </form>
+
+    <!-- Loading message (hidden by default) -->
+    <p id="loadingMessage" style="display:none; color:rgb(255, 30, 0); font-weight:bold;">
+        Fetching data... Please wait.
+    </p>
+
+    <p><i>* First time searches take significatly more time ( ~2m )</i></p>
+    <p><i>do not panic</i></p>
+
+{% endblock %}
+
+{% block js_specific %}
+    <script>
+        const form = document.getElementById("searchForm");
+        const loadingMessage = document.getElementById("loadingMessage");
+
+        form.addEventListener("submit", () => {
+            loadingMessage.style.display = "block"; // show message
+        });
+    </script>
 {% endblock %}

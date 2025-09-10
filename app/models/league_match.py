@@ -1,4 +1,8 @@
-from config import UTILITIES, RIOT_API_INSTANCE, Config
+from config import (
+    UTILITIES,
+    RIOT_API_INSTANCE,
+    Config
+)
 
 class LeagueMatch:
 

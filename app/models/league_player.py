@@ -103,7 +103,7 @@ class LeaguePlayer():
                     "duration": matchData.get("info", {}).get("gameDuration", 0),
                 }
             except Exception as e:
-                print(e)
+                history_entry = {}
                 continue
 
             self.historyData.append(history_entry)
