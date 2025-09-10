@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+        <table id="augmentsTable" class="display">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Rarity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for augment in data["augments"] %}
+                <tr>
+                    <td><img src="{{ url_for('static', filename='imgs/lol/arena_augments_large/'~ augment['iconLarge']) }}"
+                            alt="augment_image" loading="lazy" width="64" height="64"></td>
+                    <td>{{ augment["name"] }}</td>
+                    <td>{{ augment["desc"] }}</td>
+                    <td>{{ augment["rarity"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+{% endblock %}
+
+{% block js_specific %}
+    <script>
+        $(document).ready(function () {
+            // Augments Table
+            $('#augmentsTable').DataTable({
+                "order": [[1, "asc"]],
+                "pageLength": 150,
+                'columnDefs': []
+            });
+        });
+    </script>
+{% endblock %}

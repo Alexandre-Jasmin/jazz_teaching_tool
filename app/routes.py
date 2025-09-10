@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, send_from_directory
 from .services import load_classroom, get_summoner, get_match_data
 from .errors import SummonerNotFound, MatchNotFound
-from config import Config
+from config import Config, UTILITIES
 import markdown, os
 
 main = Blueprint("main", __name__)
@@ -49,3 +49,8 @@ def lol_match_api(match_id: str):
         return render_template("error.html", message=str(e)), 404
     except Exception as e:
         return render_template("error.html", message=str(e)), 500
+    
+@main.route("/lol/arena")
+def lol_arena_api():
+    augments = UTILITIES.read_json_file(Config.DATA_DIR / "lol" / "en_us_arena_augments.json")
+    return render_template("arena_home.html", data=augments)

@@ -10,7 +10,7 @@ class Utilities:
             match = re.split(r'[^a-zA-Z0-9 ]+', summoner_name)
             if len(match) < 2:
                 return None, None
-            return match[0], match[-1]
+            return match[0], match[1]
         except Exception as e:
             return None, None
         

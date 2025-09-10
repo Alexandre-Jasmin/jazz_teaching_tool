@@ -38,6 +38,9 @@ class LeaguePlayer():
         self.rankedData = RIOT_API_INSTANCE.get_league_entries_by_puuid(
             self.accountData["puuid"]
         )
+        self.currentMatch = RIOT_API_INSTANCE.get_current_match_by_puuid(
+            self.accountData["puuid"]
+        )
 
         self.matchesData: list[dict] = []
         self.historyData: list[dict] = []
@@ -47,6 +50,12 @@ class LeaguePlayer():
         self._process_challenges()
         self._process_matches()
         self._process_rank()
+        #self._process_current_match()
+
+    def _process_current_match(self) -> None:
+        if self.currentMatch:
+            for participant in self.currentMatch["participants"]:
+                continue
 
     def _process_rank(self) -> None:
         for entry in self.rankedData:
@@ -79,6 +88,7 @@ class LeaguePlayer():
                 history_entry = {
                     "match_id": matchData["info"]["gameId"],
                     "platform_id": matchData["info"]["platformId"],
+                    "match_length": matchData["info"]["platformId"],
                     "champion": player_data.get("championName", "Unknown"),
                     "level": player_data.get("champLevel", 0),
                     "kda_string": f"{player_data.get('kills', 0)} / {player_data.get('deaths', 0)} / {player_data.get('assists', 0)}",
