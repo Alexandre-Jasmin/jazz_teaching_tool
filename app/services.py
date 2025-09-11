@@ -1,5 +1,4 @@
-from config import Config
-from .models import Classroom, LeaguePlayer, LeagueMatch, RiotAPI
+from .models import Classroom, LeaguePlayer, LeagueMatch
 from .errors import SummonerNotFound, MatchNotFound, ServiceError
 
 def create_classroom():

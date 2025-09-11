@@ -1,7 +1,8 @@
 import json
 from datetime import datetime
 from config import Config
-from app.constants import LOL_CHALLENGES_CONFIG, LEAGUE_CHAMPIONS, QUEUES, _utils, RIOT_API_INSTANCE
+from app.constants import LEAGUE_CHAMPIONS, _utils
+from app.riot_service import riot_api, queues, challenges_config
 
 class LeaguePlayer():
 
@@ -10,35 +11,35 @@ class LeaguePlayer():
         self.server = server
         self.name, self.tag = _utils.split_summoner_name(self.summoner_name)
 
-        RIOT_API_INSTANCE.set_region(self.server)
-        self.accountPatch = RIOT_API_INSTANCE.get_current_server_versions()
+        riot_api.set_region(self.server)
+        self.accountPatch = riot_api.get_current_server_versions()
 
-        self.accountData = RIOT_API_INSTANCE.get_account(
+        self.accountData = riot_api.get_account(
             summoner_name=self.name, tag=self.tag
         )
-        self.summonerData = RIOT_API_INSTANCE.get_summoner(
+        self.summonerData = riot_api.get_summoner(
             puuid=self.accountData["puuid"]
         )
-        self.championData = RIOT_API_INSTANCE.get_champion_mastery(
+        self.championData = riot_api.get_champion_mastery(
             puuid=self.accountData["puuid"]
         )
-        self.challengesData = RIOT_API_INSTANCE.get_challenges(
+        self.challengesData = riot_api.get_challenges(
             puuid=self.accountData["puuid"]
         )
-        self.matchData = RIOT_API_INSTANCE.get_matches_by_puuid(
+        self.matchData = riot_api.get_matches_by_puuid(
             puuid=self.accountData["puuid"],
             count=50
         )
-        self.rankedData = RIOT_API_INSTANCE.get_league_entries_by_puuid(
+        self.rankedData = riot_api.get_league_entries_by_puuid(
             self.accountData["puuid"]
         )
-        self.currentMatch = RIOT_API_INSTANCE.get_current_match_by_puuid(
+        self.currentMatch = riot_api.get_current_match_by_puuid(
             self.accountData["puuid"]
         )
 
         self.matchesData: list[dict] = []
         self.historyData: list[dict] = []
-        self.challengesConfig = LOL_CHALLENGES_CONFIG
+        self.challengesConfig = challenges_config
 
         self._process_champions()
         self._process_challenges()
@@ -70,7 +71,7 @@ class LeaguePlayer():
             if file_path.exists():
                 matchData = _utils.read_json_file(file_path)
             else:
-                matchData = RIOT_API_INSTANCE.get_match(match_id=match_id)
+                matchData = riot_api.get_match(match_id=match_id)
                 _utils.dump_json_file(file_path, matchData)
 
             player_data = self._get_player_data(
@@ -164,7 +165,7 @@ class LeaguePlayer():
     
     @staticmethod
     def _get_queue_description(queue_id: int) -> str:
-        for q in QUEUES:
+        for q in queues:
             if q["queueId"] == queue_id:
                 return q["description"]
         return "Private Custom Game"
