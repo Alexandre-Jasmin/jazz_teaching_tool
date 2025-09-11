@@ -1,28 +1,28 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-    <meta charset="utf-8">
-    <title>{% block title %}{% endblock %}</title>
-</head>
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}{% endblock %}</title>
+    </head>
 
-<body>
+    <body>
 
-    <header>
-        <h1 align="center">jaZZ</h1>
-    </header>
+        <header>
+            <h1 align="center">jaZZ</h1>
+        </header>
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+        <main>
+            {% block content %}{% endblock %}
+        </main>
 
-    <!-- jQuery Tables -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.3/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.3.3/js/dataTables.js"></script>
+        <!-- jQuery Tables -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/2.3.3/css/dataTables.dataTables.css" />
+        <script src="https://cdn.datatables.net/2.3.3/js/dataTables.js"></script>
 
-    {% block js_specific %}{% endblock %}
+        {% block js_specific %}{% endblock %}
 
-</body>
+    </body>
 
 </html>

@@ -6,6 +6,6 @@ app = create_app()
 if __name__ == "__main__":
     #ngrok = subprocess.Popen(["ngrok", "http", "8000"])
     try:
-        app.run(host="0.0.0.0", port=8000)
+        app.run(host="localhost", port=5000, debug=True)
     finally:
         print("Flask App Terminated")

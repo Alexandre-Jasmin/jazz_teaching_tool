@@ -52,5 +52,5 @@ def lol_match_api(match_id: str):
     
 @main.route("/lol/arena")
 def lol_arena_api():
-    augments = UTILITIES.read_json_file(Config.DATA_DIR / "lol" / "en_us_arena_augments.json")
+    augments = UTILITIES.read_json_file(Config.DATA_DIR / "lol" / "en_us_arena_augments_cleaned.json")
     return render_template("arena_home.html", data=augments)

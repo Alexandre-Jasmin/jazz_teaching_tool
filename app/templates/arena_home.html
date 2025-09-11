@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+
+{% block title %}
+    jaZZ - Arena
+{% endblock %}
+
 {% block content %}
         <table id="augmentsTable" class="display">
             <thead>
@@ -12,7 +17,7 @@
             <tbody>
                 {% for augment in data["augments"] %}
                 <tr>
-                    <td><img src="{{ url_for('static', filename='imgs/lol/arena_augments_large/'~ augment['iconLarge']) }}"
+                    <td><img src="{{ url_for('static', filename='imgs/lol/arena_augments_small/'~ augment['iconSmall']) }}"
                             alt="augment_image" loading="lazy" width="64" height="64"></td>
                     <td>{{ augment["name"] }}</td>
                     <td>{{ augment["desc"] }}</td>
@@ -28,7 +33,7 @@
         $(document).ready(function () {
             // Augments Table
             $('#augmentsTable').DataTable({
-                "order": [[1, "asc"]],
+                "order": [[3, "desc"]],
                 "pageLength": 150,
                 'columnDefs': []
             });

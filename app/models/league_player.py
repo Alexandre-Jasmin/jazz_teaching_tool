@@ -88,7 +88,7 @@ class LeaguePlayer():
                 history_entry = {
                     "match_id": matchData["info"]["gameId"],
                     "platform_id": matchData["info"]["platformId"],
-                    "match_length": matchData["info"]["platformId"],
+                    "match_length": UTILITIES.format_game_duration(int(matchData["info"]["gameDuration"])),
                     "champion": player_data.get("championName", "Unknown"),
                     "level": player_data.get("champLevel", 0),
                     "kda_string": f"{player_data.get('kills', 0)} / {player_data.get('deaths', 0)} / {player_data.get('assists', 0)}",
