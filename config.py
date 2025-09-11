@@ -2,9 +2,6 @@ import os, json
 from pathlib import Path
 from dotenv import load_dotenv
 
-from app.models.riot_api import RiotAPI
-from app.models.utils import Utilities
-
 load_dotenv()
 
 class Config:
@@ -18,6 +15,7 @@ class Config:
     # --- Secrets & API keys ---
     RIOT_API_KEY = os.getenv("RIOT_API_KEY")
     RIOT_API_KEY_DEV = os.getenv("RIOT_API_KEY_DEV")
+    #DEBUG = os.getenv("FLASK_DEBUG", "false").lower() == "true"
 
     # --- Helpers ---
     @classmethod
@@ -27,10 +25,3 @@ class Config:
     @classmethod
     def load_docs(cls) -> str:
         return cls.DOCS_FILE.read_text(encoding="utf-8")
-
-# --- Global singletons ---
-RIOT_API_INSTANCE = RiotAPI(Config.RIOT_API_KEY)
-UTILITIES = Utilities()
-LEAGUE_CHAMPIONS = json.load(open(Config.get_data_path("lol/champions.json"), encoding="utf-8"))
-LOL_CHALLENGES_CONFIG = RIOT_API_INSTANCE.get_challenges_config()
-QUEUES = RIOT_API_INSTANCE.get_queues()

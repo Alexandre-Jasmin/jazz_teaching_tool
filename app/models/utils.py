@@ -18,7 +18,7 @@ class Utilities:
         compared_time = datetime.now()
         if event_time > compared_time:
             return 'How did you play in the future?'
-        difference = (compared_time-event_time).total_seconds()
+        difference = int((compared_time-event_time).total_seconds())
         if difference > 86400:
             time_formatted = int(difference/86400)
             if time_formatted == 1:

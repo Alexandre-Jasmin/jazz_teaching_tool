@@ -1,7 +1,10 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, send_from_directory
 from .services import load_classroom, get_summoner, get_match_data
 from .errors import SummonerNotFound, MatchNotFound
-from config import Config, UTILITIES
+from config import Config
+
+from .constants import ARENA_AUGMENTS_DATA
+
 import markdown, os
 
 main = Blueprint("main", __name__)
@@ -52,5 +55,5 @@ def lol_match_api(match_id: str):
     
 @main.route("/lol/arena")
 def lol_arena_api():
-    augments = UTILITIES.read_json_file(Config.DATA_DIR / "lol" / "en_us_arena_augments_cleaned.json")
+    augments = ARENA_AUGMENTS_DATA
     return render_template("arena_home.html", data=augments)

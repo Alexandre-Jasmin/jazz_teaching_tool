@@ -44,8 +44,8 @@
                     <td>{{ data.historyData[i]['champion'] }}</td>
                     <td>{{ data.historyData[i]["queue_description"] }}</td>
                     <td>{{ data.historyData[i]["time_ago"] }}</td>
-                    <td>{{ data.historyData[i]["outcome"] }} ({{data.historyData[i]["kda_string"]}}) <br> {{ data.historyData[i]["match_length"] }}</td>
-                    <td>{{ data.historyData[i]["kda"] }}</td>
+                    <td>{{ data.historyData[i]["outcome"] }} <br> {{ data.historyData[i]["match_length"] }}</td>
+                    <td>{{ data.historyData[i]["kda"] }} <br> ({{data.historyData[i]["kda_string"]}})</td>
                     <td><img src="{{ url_for('static', filename='imgs/lol/champion/' ~ data.historyData[i]['champion'] ~ '.png') }}"
                             alt="image" loading="lazy" width="32" height="32"></td>
                     <td><a href="{{ url_for('main.lol_match_api', match_id=data.matchesData[i]['metadata']['matchId']) }}">{{ data.historyData[i]["platform_id"] }}_{{ data.historyData[i]["match_id"] }}</a></td>

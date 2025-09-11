@@ -1,20 +1,14 @@
 import json
 from datetime import datetime
-from config import (
-    RIOT_API_INSTANCE,
-    UTILITIES,
-    Config,
-    LEAGUE_CHAMPIONS,
-    LOL_CHALLENGES_CONFIG, 
-    QUEUES
-)
+from config import Config
+from app.constants import LOL_CHALLENGES_CONFIG, LEAGUE_CHAMPIONS, QUEUES, _utils, RIOT_API_INSTANCE
 
 class LeaguePlayer():
 
     def __init__(self, summoner_name: str, server: str) -> None:
         self.summoner_name = summoner_name
         self.server = server
-        self.name, self.tag = UTILITIES.split_summoner_name(self.summoner_name)
+        self.name, self.tag = _utils.split_summoner_name(self.summoner_name)
 
         RIOT_API_INSTANCE.set_region(self.server)
         self.accountPatch = RIOT_API_INSTANCE.get_current_server_versions()
@@ -74,10 +68,10 @@ class LeaguePlayer():
             file_path = Config.MATCHES_DIR / f"{match_id}.json"
 
             if file_path.exists():
-                matchData = UTILITIES.read_json_file(file_path)
+                matchData = _utils.read_json_file(file_path)
             else:
                 matchData = RIOT_API_INSTANCE.get_match(match_id=match_id)
-                UTILITIES.dump_json_file(file_path, matchData)
+                _utils.dump_json_file(file_path, matchData)
 
             player_data = self._get_player_data(
                 matchData["info"]["participants"],
@@ -88,7 +82,7 @@ class LeaguePlayer():
                 history_entry = {
                     "match_id": matchData["info"]["gameId"],
                     "platform_id": matchData["info"]["platformId"],
-                    "match_length": UTILITIES.format_game_duration(int(matchData["info"]["gameDuration"])),
+                    "match_length": _utils.format_game_duration(int(matchData["info"]["gameDuration"])),
                     "champion": player_data.get("championName", "Unknown"),
                     "level": player_data.get("champLevel", 0),
                     "kda_string": f"{player_data.get('kills', 0)} / {player_data.get('deaths', 0)} / {player_data.get('assists', 0)}",
@@ -102,7 +96,7 @@ class LeaguePlayer():
                         matchData.get("info", {}).get("queueId", -1)
                     ),
                     "when": matchData.get("info", {}).get("gameEndTimestamp", 0),
-                    "time_ago": UTILITIES.time_ago(
+                    "time_ago": _utils.time_ago(
                         datetime.fromtimestamp(
                             matchData.get("info", {}).get("gameEndTimestamp", 0) / 1000
                         )
@@ -112,6 +106,10 @@ class LeaguePlayer():
                     ),
                     "duration": matchData.get("info", {}).get("gameDuration", 0),
                 }
+                #! Arena special, find place
+                if history_entry["queue"] == 1700:
+                    place = player_data.get("placement", 0)
+                    history_entry["outcome"] = history_entry["outcome"] + f" - {place}th place"
             except Exception as e:
                 history_entry = {}
                 continue
@@ -153,7 +151,7 @@ class LeaguePlayer():
         for entry in self.championData:
             champ_id = entry["championId"]
             entry["championName"] = champion_map.get(champ_id, "Unknown")
-            entry["lastPlayTimePretty"] = UTILITIES.timestamp_to_date_time(int(entry["lastPlayTime"]))
+            entry["lastPlayTimePretty"] = _utils.timestamp_to_date_time(int(entry["lastPlayTime"]))
 
     @staticmethod
     def _build_champion_map() -> dict[int, str]:
