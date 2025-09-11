@@ -1,8 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, send_from_directory
 from .services import load_classroom, get_summoner, get_match_data
 from .errors import SummonerNotFound, MatchNotFound
-from config import Config
-
 from .constants import ARENA_AUGMENTS_DATA
 
 import markdown, os
@@ -12,12 +10,6 @@ main = Blueprint("main", __name__)
 @main.route("/")
 def index():
     return render_template("index.html")
-
-@main.route("/docs")
-def show_documentation():
-    content = Config.load_docs()
-    html = markdown.markdown(content)
-    return render_template("docs.html", content=html)
 
 @main.route("/classroom")
 def classroom_home():
