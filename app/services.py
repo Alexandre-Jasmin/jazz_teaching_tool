@@ -1,18 +1,9 @@
-from .models import Classroom, LeaguePlayer, LeagueMatch
-from .errors import SummonerNotFound, MatchNotFound, ServiceError
-from .models.riot_api import RiotAPI
 from config import Config
-
-RIOT_API_INSTANCE = RiotAPI(Config.RIOT_API_KEY)
+from .models import Classroom, LeaguePlayer, LeagueMatch, RiotAPI
+from .errors import SummonerNotFound, MatchNotFound, ServiceError
 
 def create_classroom():
     return
-
-def get_challenges_config():
-    return RIOT_API_INSTANCE.get_challenges_config()
-
-def get_queues():
-    return RIOT_API_INSTANCE.get_challenges_config()
 
 def load_classroom(classroom_id: str):
     try:

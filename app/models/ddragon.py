@@ -1,5 +1,5 @@
 from config import Config
-from app.services import RIOT_API_INSTANCE
+from app.constants import RIOT_API_INSTANCE
 
 class DataDragon:
     BASE_URL = "https://ddragon.leagueoflegends.com/cdn"
