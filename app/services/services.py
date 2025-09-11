@@ -1,5 +1,5 @@
-from .models import Classroom, LeaguePlayer, LeagueMatch
-from .errors import SummonerNotFound, MatchNotFound, ServiceError
+from app.models import Classroom, LeaguePlayer, LeagueMatch
+from app.errors import SummonerNotFound, MatchNotFound, ServiceError
 
 def create_classroom():
     return

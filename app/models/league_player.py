@@ -2,11 +2,13 @@ import json
 from datetime import datetime
 from config import Config
 from app.constants import LEAGUE_CHAMPIONS, _utils
-from app.riot_service import riot_api, queues, challenges_config
 
-class LeaguePlayer():
+class LeaguePlayer:
 
     def __init__(self, summoner_name: str, server: str) -> None:
+
+        from app.services.riot_service import riot_api, challenges_config
+
         self.summoner_name = summoner_name
         self.server = server
         self.name, self.tag = _utils.split_summoner_name(self.summoner_name)
@@ -62,6 +64,8 @@ class LeaguePlayer():
                 entry["winrate"] = round(winrate, 1)
 
     def _process_matches(self) -> None:
+
+        from app.services.riot_service import riot_api
 
         outcome_dict = {"Win": True, "Loss": False}
 
@@ -165,6 +169,7 @@ class LeaguePlayer():
     
     @staticmethod
     def _get_queue_description(queue_id: int) -> str:
+        from app.services.riot_service import queues
         for q in queues:
             if q["queueId"] == queue_id:
                 return q["description"]

@@ -1,6 +1,6 @@
 from config import Config
 from app.constants import _utils
-from app.riot_service import riot_api
+from app.services.riot_service import riot_api
 
 class LeagueMatch:
 
