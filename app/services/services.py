@@ -1,15 +1,5 @@
-from app.models import Classroom, LeaguePlayer, LeagueMatch
+from app.models import LeaguePlayer, LeagueMatch
 from app.errors import SummonerNotFound, MatchNotFound, ServiceError
-
-def create_classroom():
-    return
-
-def load_classroom(classroom_id: str):
-    try:
-        loadedClassroom = Classroom(puuid=classroom_id)
-    except Exception as e:
-        return None
-    return loadedClassroom  
 
 def get_summoner(summoner_name: str, server: str) -> LeaguePlayer:
     try:

@@ -5,6 +5,7 @@ from app.services.riot_service import riot_api
 class LeagueMatch:
 
     def __init__(self, match_id: str) -> None:
+        
         self.match_id = match_id
         self.server, self.formated_match_id = _utils.split_summoner_name(self.match_id)
         riot_api.set_region(self.server)

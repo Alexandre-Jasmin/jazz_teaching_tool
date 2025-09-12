@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, send_from_directory
-from .services import load_classroom, get_summoner, get_match_data
+from .services import get_summoner, get_match_data
 from .errors import SummonerNotFound, MatchNotFound
 from .constants import ARENA_AUGMENTS_DATA
 
@@ -10,10 +10,6 @@ main = Blueprint("main", __name__)
 @main.route("/")
 def index():
     return render_template("index.html")
-
-@main.route("/classroom")
-def classroom_home():
-    return render_template("classroom.html")
 
 @main.route("/lol")
 def league_home():
